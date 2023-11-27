@@ -14,29 +14,32 @@ namespace Monitoreo
     public partial class Form1 : Form
     {
         private SerialPort puertoSerie = new SerialPort("COM3", 11500);
-        public Form1()
+        private string datos;
+
+        private void btnConectar_Click(object sender, EventArgs e)
         {
-            InitializeComponent();
-            puertoSerie.DataReceived += PuertoSerie_DataReceived;
+            puertoSerie.Open();
         }
-    }
 
-    private void PuertoSerie_DataReceived(object sender, SerialDataReceivedEventArgs e)
-    {
-        string data = puertoSerie.ReadLine();
-
-        if (data.StartsWith("Temperatura"))
+        private void btnRegar_Click(object sender, EventArgs e)
         {
-            string[] partes = data.Split(',');
-            string temp = partes[0].Split(':')[1].Trim();
-            string humedad = partes[1].Split(':')[1].Trim();
-            string humedadRelativa = partes[2].Split(':')[2].Trim();
-            string porcentajeTanque = partes[3].Split(':')[3].Trim();
-            
-            if (txtTemperatura.Text)
-            {
+            puertoSerie.WriteLine("R");
+        }
 
-            }
+        private void btnEnfriar_Click(object sender, EventArgs e)
+        {
+            puertoSerie.WriteLine("E");
+        }
+
+        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            datos = puertoSerie.ReadLine();
+            this.Invoke(new EventHandler(mostrarDatos));
+        }
+
+        private void mostrarDatos(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
